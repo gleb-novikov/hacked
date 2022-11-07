@@ -1,11 +1,15 @@
 package com.hacked.app
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -15,11 +19,31 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsFragment : Fragment() {
+    private lateinit var map: GoogleMap
+    private val locationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                checkLocationPermission()
+            }
+            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                checkLocationPermission()
+            } else -> {
+            // No location access granted.
+        }
+        }
+    }
 
     private val callback = OnMapReadyCallback { googleMap ->
+        map = googleMap
         val sydney = LatLng(-34.0, 151.0)
         googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        checkLocationPermission()
+        map.setOnMyLocationChangeListener {
+            Log.d("LOCATION", "$it.latitude $it.longitude");
+        }
     }
 
     override fun onCreateView(
@@ -34,5 +58,18 @@ class MapsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+    }
+
+    private fun checkLocationPermission() {
+        val findLocation = requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarseLocation = requireActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (findLocation == PackageManager.PERMISSION_GRANTED &&
+            coarseLocation == PackageManager.PERMISSION_GRANTED) {
+            map.isMyLocationEnabled = true
+        } else {
+            locationPermissionRequest.launch(arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION))
+        }
     }
 }
