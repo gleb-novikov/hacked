@@ -1,6 +1,7 @@
 package com.hacked.app
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.fragment.app.Fragment
 
@@ -30,8 +31,8 @@ class MapsFragment : Fragment() {
             permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
                 checkLocationPermission()
             } else -> {
-            // No location access granted.
-        }
+                // No location access granted.
+            }
         }
     }
 
@@ -42,7 +43,10 @@ class MapsFragment : Fragment() {
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         checkLocationPermission()
         map.setOnMyLocationChangeListener {
-            Log.d("LOCATION", "$it.latitude $it.longitude");
+            Log.d("LOCATION", "$it.latitude $it.longitude")
+        }
+        map.setOnPoiClickListener {
+            Log.d("POI_DATA", "${it.name} (${it.placeId}): ${it.latLng.latitude}, ${it.latLng.longitude}")
         }
     }
 
@@ -60,6 +64,7 @@ class MapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
     }
 
+    @SuppressLint("MissingPermission")
     private fun checkLocationPermission() {
         val findLocation = requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
         val coarseLocation = requireActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
