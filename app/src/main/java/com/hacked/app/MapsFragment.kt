@@ -43,15 +43,15 @@ class MapsFragment : Fragment() {
 
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         checkLocationPermission()
         map.setOnMyLocationChangeListener {
-            Log.d("LOCATION", "$it.latitude $it.longitude")
+            Log.d("LOCATION", "${it.latitude} ${it.longitude}")
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(it.latitude, it.longitude)))
+            googleMap.moveCamera(CameraUpdateFactory.zoomTo(16f))
         }
         map.setOnPoiClickListener {
             Log.d("POI_DATA", "${it.name} (${it.placeId}): ${it.latLng.latitude}, ${it.latLng.longitude}")
+            navController.navigate(R.id.action_mapsFragment_to_hackFragment)
         }
     }
 
