@@ -13,10 +13,18 @@
         <action
             android:id="@+id/action_mapsFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mapsFragment_to_hackFragment"
+            app:destination="@id/hackFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.hacked.app.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/hackFragment"
+        android:name="com.hacked.app.HackFragment"
+        android:label="fragment_hack"
+        tools:layout="@layout/fragment_hack" />
 </navigation>
