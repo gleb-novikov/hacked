@@ -43,7 +43,7 @@ class RegistrationFragment : Fragment() {
 
     private fun registration(userName: String, email: String, password: String) {
         val registrationRequest = RegistrationRequest(userName=userName, email=email, password=password)
-        apiClient.getApiService().registration(registrationRequest)
+        apiClient.getApiService(requireContext()).registration(registrationRequest)
             .enqueue(object : Callback<RegistrationResponse> {
                 override fun onResponse(call: Call<RegistrationResponse>, response: Response<RegistrationResponse>) {
                     val registrationResponse = response.body()
