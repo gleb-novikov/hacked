@@ -46,7 +46,7 @@ class LoginFragment : Fragment() {
 
     private fun login(email: String, password: String) {
         val loginRequest = LoginRequest(email=email, password=password)
-        apiClient.getApiService().login(loginRequest)
+        apiClient.getApiService(requireContext()).login(loginRequest)
             .enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     val loginResponse = response.body()

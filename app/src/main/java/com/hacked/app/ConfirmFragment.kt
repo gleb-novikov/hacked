@@ -39,7 +39,7 @@ class ConfirmFragment : Fragment() {
 
     private fun confirm(code: String) {
         val confirmRequest = ConfirmRequest(activationCode=code)
-        apiClient.getApiService().confirm(confirmRequest)
+        apiClient.getApiService(requireContext()).confirm(confirmRequest)
             .enqueue(object : Callback<ConfirmResponse> {
                 override fun onResponse(call: Call<ConfirmResponse>, response: Response<ConfirmResponse>) {
                     val confirmResponse = response.body()
