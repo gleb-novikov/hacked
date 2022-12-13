@@ -19,4 +19,7 @@ interface ApiService {
 
     @PUT("/user/profile/update")
     fun updateUserName(@Body request: UserNameRequest): Call<UserResponse>
+
+    @PUT("/user/profile/update")
+    fun updateUser(@Body request: UserRequest): Call<UserResponse>
 }
