@@ -39,7 +39,6 @@ class HackFragment : Fragment() {
             override fun onWin() {
                 addWinDrop()
                 Toasty.success(requireContext(), "Успешный взлом!", Toast.LENGTH_SHORT, true).show()
-                requireView().findNavController().popBackStack()
             }
 
             override fun onLose() {
@@ -86,6 +85,7 @@ class HackFragment : Fragment() {
                     Log.d(Constants.LOGGING_RETROFIT, "USER: ${data?.user}")
                     if (data != null)
                         user = data.user
+                    requireView().findNavController().popBackStack()
                 }
 
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
