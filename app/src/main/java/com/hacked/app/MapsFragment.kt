@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -22,9 +23,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.hacked.app.geodesy.Geodesy
+import es.dmoral.toasty.Toasty
 
 class MapsFragment : Fragment() {
     private lateinit var map: GoogleMap
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
     lateinit var navController: NavController
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -45,13 +50,18 @@ class MapsFragment : Fragment() {
         map = googleMap
         checkLocationPermission()
         map.setOnMyLocationChangeListener {
+            latitude = it.latitude
+            longitude = it.longitude
             Log.d("LOCATION", "${it.latitude} ${it.longitude}")
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(it.latitude, it.longitude)))
             googleMap.moveCamera(CameraUpdateFactory.zoomTo(16f))
         }
         map.setOnPoiClickListener {
             Log.d("POI_DATA", "${it.name} (${it.placeId}): ${it.latLng.latitude}, ${it.latLng.longitude}")
-            navController.navigate(R.id.action_mapsFragment_to_hackFragment)
+            if (Geodesy.getDistance(latitude, longitude, it.latLng.latitude, it.latLng.longitude) < 150)
+                navController.navigate(R.id.action_mapsFragment_to_hackFragment)
+            else
+                Toasty.info(requireContext(), "Подойдите ближе", Toast.LENGTH_SHORT, true).show()
         }
     }
 
